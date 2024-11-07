@@ -23,7 +23,7 @@ const user = {
 
 const navigation: NavigationItem[] = [
   { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
+  { name: 'Profile', href: '/auth/profile', current: false },
   { name: 'Projects', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
   { name: 'Reports', href: '#', current: false },
@@ -39,7 +39,10 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const Header: React.FC = () => {
+
+
+export default function Header() {
+
   return (
     <>
 
@@ -111,7 +114,9 @@ const Header: React.FC = () => {
                   </MenuItems>
                  
                 </Menu>
-                <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>
+                {user ? '': <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
+               
+               
               </div>
             </div>
             <div className="-mr-2 flex md:hidden">
@@ -194,4 +199,3 @@ const Header: React.FC = () => {
   )
 }
 
-export default Header
