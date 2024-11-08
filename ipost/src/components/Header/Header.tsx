@@ -1,7 +1,11 @@
+'use client'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 import Link from 'next/link'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import ThemeToggle from '../ThemeToggle'
 
 interface NavigationItem {
   name: string
@@ -32,7 +36,6 @@ const navigation: NavigationItem[] = [
 const userNavigation: UserNavigationItem[] = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
 ]
 
 function classNames(...classes: string[]) {
@@ -42,6 +45,16 @@ function classNames(...classes: string[]) {
 
 
 export default function Header() {
+  const router = useRouter()
+  const logout = async () => {
+    try {
+      await axios.get('/api/users/logout')
+      router.push('/auth/login')
+    } catch (error: any) {
+      console.log(error.message);
+
+    }
+  }
 
   return (
     <>
@@ -61,15 +74,15 @@ export default function Header() {
                 <div className="ml-10 flex items-baseline space-x-4">
                   {navigation.map((item) => (
                     <Link key={item.name} href={item.href}
-                     
-                        aria-current={item.current ? 'page' : undefined}
-                        className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium',
-                        )}
-                      >
-                        {item.name}
-                      
+
+                      aria-current={item.current ? 'page' : undefined}
+                      className={classNames(
+                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        'rounded-md px-3 py-2 text-sm font-medium',
+                      )}
+                    >
+                      {item.name}
+
                     </Link>
                   ))}
                 </div>
@@ -105,18 +118,25 @@ export default function Header() {
                     {userNavigation.map((item) => (
                       <MenuItem key={item.name}>
                         <Link href={item.href}
-                           className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-                            {item.name} 
-                          
+                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
+                          {item.name}
+
                         </Link>
+
                       </MenuItem>
+
                     ))}
+                    <button onClick={logout}
+                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
+                      Sign Out
+
+                    </button>
                   </MenuItems>
-                 
+
                 </Menu>
-                {user ? '': <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
-               
-               
+                {user ? '' : <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
+
+                <ThemeToggle />
               </div>
             </div>
             <div className="-mr-2 flex md:hidden">
@@ -171,8 +191,8 @@ export default function Header() {
                 <span className="absolute -inset-1.5" />
                 <span className="sr-only">View notifications</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-</svg>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
 
               </button>
             </div>
@@ -192,7 +212,7 @@ export default function Header() {
         </DisclosurePanel>
       </Disclosure>
 
-    
+
 
 
     </>
