@@ -2,6 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 import Link from 'next/link'
+import ThemeSwitch from '../ThemeSwitch'
 
 interface NavigationItem {
   name: string
@@ -46,7 +47,7 @@ export default function Header() {
   return (
     <>
 
-      <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-gray-500 dark:bg-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
@@ -115,7 +116,7 @@ export default function Header() {
                  
                 </Menu>
                 {user ? '': <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
-               
+                <ThemeSwitch />
                
               </div>
             </div>
