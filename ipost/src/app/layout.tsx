@@ -31,11 +31,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
         <ThemeProvider>
-
           <div className="min-h-full">
-
             <Header />
             <main>
               <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -47,10 +44,7 @@ export default function RootLayout({
               </div>
             </main>
             <Footer />
-
           </div>
-
-
         </ThemeProvider>
       </body>
     </html>

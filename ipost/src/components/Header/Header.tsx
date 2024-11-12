@@ -43,16 +43,7 @@ function classNames(...classes: string[]) {
 
 
 export default function Header() {
-  const router = useRouter()
-  const logout = async () => {
-    try {
-      await axios.get('/api/users/logout')
-      router.push('/auth/login')
-    } catch (error: any) {
-      console.log(error.message);
 
-    }
-  }
 
   return (
     <>
@@ -124,7 +115,7 @@ export default function Header() {
                       </MenuItem>
 
                     ))}
-                    <button onClick={logout}
+                    <button 
                       className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
                       Sign Out
 
