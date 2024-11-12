@@ -23,21 +23,31 @@ export default function Login() {
   const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onLogin = async (e: any) => {
     e.preventDefault();  // Prevent default form submission behavior
     try {
       setLoading(true);
-      await axios.post("/api/users/login", user);
-      
+      console.log("Attempting to log in...");
+
+      const response = await axios.post("/api/users/login", user, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log("Login successful:", response.data);
+
       // Redirect after successful login
       router.push('/');
-      
+
     } catch (error: any) {
-      console.log('Something went wrong:', error);
+      // Log full error details
+      if (axios.isAxiosError(error)) {
+        console.log('Error response:', error.response ? error.response.data : error.message);
+      } else {
+        console.log('Unexpected error:', error);
+      }
     } finally {
       setLoading(false);
     }
-  };
+};
 
   // Effect hook to manage button disable state based on form input
   useEffect(() => {
@@ -49,7 +59,7 @@ export default function Login() {
   }, [user]);
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 dark:bg-red-800">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Login to your account
