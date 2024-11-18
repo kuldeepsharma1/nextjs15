@@ -12,14 +12,17 @@ interface User {
 }
 
 export default function Login() {
+
+ 
+
   const router = useRouter();
-  
+
   // State types
   const [user, setUser] = React.useState<User>({
     email: "",
     password: "",
   });
-  
+
   const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -47,7 +50,7 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-};
+  };
 
   // Effect hook to manage button disable state based on form input
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function Login() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={onLogin} className="space-y-6">
           {loading ? <Spinner /> : ''}
-          
+
           <div>
             <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
               Email address
