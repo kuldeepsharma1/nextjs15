@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import React, { useEffect } from "react";
@@ -13,7 +14,7 @@ interface User {
 
 export default function Login() {
 
- 
+
 
   const router = useRouter();
 
@@ -68,7 +69,31 @@ export default function Login() {
           Login to your account
         </h2>
       </div>
+      {/* <Image
+        src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa"
+        alt="A beautiful view"
+        width={800}
+        height={600}
+      /> */}
+    <div>
+    {/* Unsplash Example */}
+    <Image 
+      src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa" 
+      alt="Unsplash Example"
+      width={800} 
+      height={600} 
+      priority 
+    />
 
+    {/* Pixabay Example */}
+    <Image 
+      src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg" 
+      alt="Pixabay Example"
+      width={800} 
+      height={600} 
+      priority 
+    />
+  </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={onLogin} className="space-y-6">
           {loading ? <Spinner /> : ''}
