@@ -1,9 +1,13 @@
 'use client';
 
+import axios from 'axios';
+import { useRouter } from "next/navigation";
 import React, { useState } from 'react';
 
 export default function CreateBlogForm() {
+  const router = useRouter();
   const [title, setTitle] = useState<string>('');
+  const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [author, setAuthor] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -19,21 +23,21 @@ export default function CreateBlogForm() {
     const postData = { title, content, author };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/posts/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
 
-      if (response.ok) {
-         await response.json();
+      const response = await axios.post("/api/blogs/create", postData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log("Blog created successfully!", response.data);
+
+      if (response.data) {
+
         setSuccessMessage('Post created successfully!');
         // Optionally reset form fields
         setTitle('');
         setContent('');
         setAuthor('');
+        // Redirect after successful login
+        router.push('/blogs');
       } else {
         setErrorMessage('Failed to create the post. Please try again.');
       }
@@ -73,6 +77,20 @@ export default function CreateBlogForm() {
             required
           />
         </div>
+        <div className="mb-4">
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+            Image
+          </label>
+          <input
+            id="image"
+            type="text"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Enter the post image address"
+            required
+          />
+        </div>
 
         <div className="mb-4">
           <label htmlFor="content" className="block text-sm font-medium text-gray-700">
@@ -106,9 +124,8 @@ export default function CreateBlogForm() {
 
         <button
           type="submit"
-          className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-            isSubmitting ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'
-          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+          className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isSubmitting ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'
+            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Creating...' : 'Create Post'}
