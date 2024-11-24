@@ -2,12 +2,14 @@
 
 import axios from 'axios';
 import { useRouter } from "next/navigation";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';  // Import useParams to get dynamic route params
 
-export default function CreateBlogForm() {
+export default function EditBlogForm() {
   const router = useRouter();
+  const { slug } = useParams();  // Extract slug from dynamic route
+  
   const [title, setTitle] = useState<string>('');
-  const [slug, setSlug] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -15,35 +17,48 @@ export default function CreateBlogForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Fetch blog data when the component mounts
+  useEffect(() => {
+    if (slug) {
+      axios.get(`/api/blogs/${slug}`)
+        .then(response => {
+          const post = response.data.post;
+          setTitle(post.title);
+          setCategory(post.category);
+          setImage(post.image);
+          setContent(post.content);
+          
+        })
+        .catch(error => {
+          console.error('Error fetching blog:', error);
+          setErrorMessage('Failed to load the blog post.');
+        });
+    }
+  }, [slug]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const postData = { title, content,category ,image,slug};
+    const postData = { title, content, category, image, slug };
 
     try {
-
-      const response = await axios.post("/api/blogs/create", postData, {
+      const response = await axios.put(`/api/blogs/${slug}/edit`, postData, {
         headers: { 'Content-Type': 'application/json' }
       });
-      console.log("Blog created successfully!", response.data);
+      console.log("Blog updated successfully!", response.data);
 
-      if (response.data) {
-
-        setSuccessMessage('Post created successfully!');
-        // Optionally reset form fields
-        setTitle('');
-        setContent('');
-   
-        // Redirect after successful login
-        router.push('/blogs');
+      if (response.data.success) {
+        setSuccessMessage('Post updated successfully!');
+        // Optionally reset form fields or redirect
+        router.push(`/blogs/${slug}`); // Redirect to the blog post page
       } else {
-        setErrorMessage('Failed to create the post. Please try again.');
+        setErrorMessage('Failed to update the post. Please try again.');
       }
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error('Error updating post:', error);
       setErrorMessage('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -52,7 +67,7 @@ export default function CreateBlogForm() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6">Create a New Blog Post</h2>
+      <h2 className="text-2xl font-bold mb-6">Edit Blog Post</h2>
       {errorMessage && (
         <div className="mb-4 text-sm text-red-600">
           {errorMessage}
@@ -79,30 +94,28 @@ export default function CreateBlogForm() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
             Slug
           </label>
           <input
-            id="title"
+            id="slug"
             type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
+            value={slug || ''}  // Set default value from the dynamic route parameter
+            readOnly
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter the post slug"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700">
             Category
           </label>
           <input
-            id="title"
+            id="category"
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter the post slug"
             required
           />
         </div>
@@ -116,7 +129,6 @@ export default function CreateBlogForm() {
             value={image}
             onChange={(e) => setImage(e.target.value)}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter the post image address"
             required
           />
         </div>
@@ -136,6 +148,7 @@ export default function CreateBlogForm() {
           />
         </div>
 
+      
 
         <button
           type="submit"
@@ -143,7 +156,7 @@ export default function CreateBlogForm() {
             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Creating...' : 'Create Post'}
+          {isSubmitting ? 'Updating...' : 'Update Post'}
         </button>
       </form>
     </div>
