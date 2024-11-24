@@ -45,7 +45,7 @@ export default function EditBlogForm() {
     const postData = { title, content, category, image, slug };
 
     try {
-      const response = await axios.put(`/api/blogs/${slug}/edit`, postData, {
+      const response = await axios.put(`/api/blogs/${slug}`, postData, {
         headers: { 'Content-Type': 'application/json' }
       });
       console.log("Blog updated successfully!", response.data);

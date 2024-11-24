@@ -47,7 +47,7 @@ export default function Page() {
 
   const handleDelete = async (postId: string) => {
     try {
-      const response = await axios.delete("/api/blogs/delete", {
+      await axios.delete("/api/blogs/delete", {
         data: { postId },
         headers: { 'Content-Type': 'application/json' }
       });

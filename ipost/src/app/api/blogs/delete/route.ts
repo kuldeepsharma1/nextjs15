@@ -23,9 +23,19 @@ export async function DELETE(request: NextRequest) {
             message: "Blog deleted",
             success: true,
         });
-    } catch (error: any) {
+    } catch (err: unknown) {
+        // Handle any unexpected errors
+        if (err instanceof Error) {
+
+            return NextResponse.json(
+                { message: `Server error: ${err.message}`, success: false },
+                { status: 500 }
+            );
+        }
+
+        console.error('Unexpected error occurred:', err);
         return NextResponse.json(
-            { error: `An error occurred: ${error.message}` },
+            { message: 'Unexpected error occurred while updating the blog.', success: false },
             { status: 500 }
         );
     }

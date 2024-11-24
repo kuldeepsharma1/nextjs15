@@ -48,8 +48,21 @@ export async function POST(request: NextRequest) {
             savedUser
         })
 
-    } catch (error: any) {
-        return NextResponse.json({ error: 'what the fuck ' + error.message }, { status: 500 })
+    }catch (err: unknown) {
+        // Handle any unexpected errors
+        if (err instanceof Error) {
+
+            return NextResponse.json(
+                { message: `Server error: ${err.message}`, success: false },
+                { status: 500 }
+            );
+        }
+
+        console.error('Unexpected error occurred:', err);
+        return NextResponse.json(
+            { message: 'Unexpected error occurred while updating the blog.', success: false },
+            { status: 500 }
+        );
     }
 
 }

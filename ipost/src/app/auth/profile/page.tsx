@@ -1,23 +1,33 @@
-"use client"
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
-import React from 'react'
+"use client";
 
-export default function page() {
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
-    const router = useRouter()
-    const logout = async () => {
-        try {
-            await axios.get('/api/users/logout')
-            router.push('/auth/login')
-        } catch (error: any) {
-            console.log(error.message);
+export default function Page() {
+  const router = useRouter();
 
-        }
+  const logout = async () => {
+    try {
+      await axios.get('/api/users/logout'); // Adjust API endpoint as needed
+      router.push('/auth/login');
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error(err.response?.data?.message || err.message || 'Logout failed.');
+      } else {
+        console.error('An unexpected error occurred.');
+      }
     }
-    return (
-        <div>
-            <button onClick={logout} className='bg-red-500 p-4 rounded-full mx-auto w-32 text-white'>Logout</button>
-        </div>
-    )
+  };
+
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <button
+        onClick={logout}
+        className="bg-red-500 p-4 rounded-full text-white hover:bg-red-600 transition"
+      >
+        Logout
+      </button>
+    </div>
+  );
 }

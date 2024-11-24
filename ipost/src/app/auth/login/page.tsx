@@ -27,7 +27,7 @@ export default function Login() {
   const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const onLogin = async (e: any) => {
+  const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();  // Prevent default form submission behavior
     try {
       setLoading(true);
@@ -41,7 +41,7 @@ export default function Login() {
       // Redirect after successful login
       router.push('/');
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Log full error details
       if (axios.isAxiosError(error)) {
         console.log('Error response:', error.response ? error.response.data : error.message);

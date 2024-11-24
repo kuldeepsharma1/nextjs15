@@ -65,14 +65,20 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error: any) {
-    // Handle errors with a generic message
-    console.error('Login error:', error); // Log the error for debugging
+  } catch (err: unknown) {
+    // Handle any unexpected errors
+    if (err instanceof Error) {
 
-    // Respond with a 500 error and a message
+        return NextResponse.json(
+            { message: `Server error: ${err.message}`, success: false },
+            { status: 500 }
+        );
+    }
+
+    console.error('Unexpected error occurred:', err);
     return NextResponse.json(
-      { error: 'Something went wrong. Please try again later.' },
-      { status: 500 }
+        { message: 'Unexpected error occurred while updating the blog.', success: false },
+        { status: 500 }
     );
-  }
+}
 }

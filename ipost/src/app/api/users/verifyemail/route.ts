@@ -31,10 +31,22 @@ export async function POST(request: NextRequest) {
         user.verifyTokenExpiry = undefined;
         await user.save();
 
-       return NextResponse.json({ message: "Email  verified" ,success:true});
+        return NextResponse.json({ message: "Email  verified", success: true });
 
-    } catch (error: any) {
-        console.error("Error verify email", error.message);
-        return NextResponse.json({ error: error.message || "An unknow error" }, { status: 500 })
+    } catch (err: unknown) {
+        // Handle any unexpected errors
+        if (err instanceof Error) {
+
+            return NextResponse.json(
+                { message: `Server error: ${err.message}`, success: false },
+                { status: 500 }
+            );
+        }
+
+        console.error('Unexpected error occurred:', err);
+        return NextResponse.json(
+            { message: 'Unexpected error occurred while updating the blog.', success: false },
+            { status: 500 }
+        );
     }
 }
