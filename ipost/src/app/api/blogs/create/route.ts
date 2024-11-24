@@ -19,10 +19,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Blog  already exist' }, { status: 400 })
         }
 
-        const authorid = await getDataFromToken(request);
+        const username = await getDataFromToken(request);
 
-        const user = await User.findById( authorid )
-        const author = user.username;
+        const uname = await User.findOne({ username })
+        const author = uname.username;
         const newBlog = new Blog({
             title, image, content, author, slug, category
         })
@@ -37,10 +37,10 @@ export async function POST(request: NextRequest) {
             savedBlog
         })
 
-    }  catch (err: unknown) {
+    } catch (err: unknown) {
         // Handle any unexpected errors
         if (err instanceof Error) {
-           
+
             return NextResponse.json(
                 { message: `Server error: ${err.message}`, success: false },
                 { status: 500 }

@@ -20,7 +20,7 @@ export const getDataFromToken = (request: NextRequest): string | null => {
     // Decode the token and cast to the specific type
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!) as DecodedToken;  // Cast to the DecodedToken type
 
-    return decodedToken.id; // Return the user ID
+    return decodedToken.username; // Return the user ID
   } catch (error: unknown) {
     console.error('Error extracting data from token:', error); // Log the error
     throw new Error('Unauthorized: Token is invalid or expired'); // Handle invalid/expired token

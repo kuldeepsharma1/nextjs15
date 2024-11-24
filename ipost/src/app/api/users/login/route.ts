@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
 
     // Create token payload
     const tokenData = {
-      id: user._id,
       username: user.username,
       email: user.email
     };
