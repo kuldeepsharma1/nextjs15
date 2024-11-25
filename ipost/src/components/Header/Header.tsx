@@ -4,6 +4,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 import Link from 'next/link'
 import ThemeSwitch from '../ThemeSwitch'
+import Image from 'next/image'
 
 interface NavigationItem {
   name: string
@@ -24,9 +25,9 @@ const user = {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Dashboard', href: '/blogs', current: true },
   { name: 'Profile', href: '/auth/profile', current: false },
-  { name: 'Projects', href: '#', current: false },
+  { name: 'Blogs', href: '/blogs', current: false },
   { name: 'Calendar', href: '#', current: false },
   { name: 'Reports', href: '#', current: false },
 ]
@@ -53,9 +54,9 @@ export default function Header() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <img
-                  alt="Your Company"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                <Image
+                  alt="Your Company" width={20} height={20}
+                  src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
                   className="h-8 w-8"
                 />
               </div>
@@ -97,7 +98,12 @@ export default function Header() {
                     <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
-                      <img alt="" src={user.imageUrl} className="h-8 w-8 rounded-full" />
+
+                      <Image
+                        alt="Your Company" width={20} height={20}
+                        src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
+                        className="h-8 w-8 rounded-full"
+                      />
                     </MenuButton>
                   </div>
                   <MenuItems
@@ -115,7 +121,7 @@ export default function Header() {
                       </MenuItem>
 
                     ))}
-                    <button 
+                    <button
                       className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
                       Sign Out
 
@@ -123,9 +129,9 @@ export default function Header() {
                   </MenuItems>
 
                 </Menu>
-                {user ? '': <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
+                {user ? '' : <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
                 <ThemeSwitch />
-               
+
               </div>
             </div>
             <div className="-mr-2 flex md:hidden">
