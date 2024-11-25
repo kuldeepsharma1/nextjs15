@@ -3,11 +3,11 @@
 import axios from 'axios';
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';  // Import useParams to get dynamic route params
+import { useParams } from 'next/navigation';  
 
 export default function EditBlogForm() {
   const router = useRouter();
-  const { slug } = useParams();  // Extract slug from dynamic route
+  const { slug } = useParams();  
   
   const [title, setTitle] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -45,7 +45,7 @@ export default function EditBlogForm() {
     const postData = { title, content, category, image, slug };
 
     try {
-      const response = await axios.put(`/api/blogs/${slug}`, postData, {
+      const response = await axios.patch(`/api/blogs/${slug}`, postData, {
         headers: { 'Content-Type': 'application/json' }
       });
       console.log("Blog updated successfully!", response.data);
@@ -53,7 +53,7 @@ export default function EditBlogForm() {
       if (response.data.success) {
         setSuccessMessage('Post updated successfully!');
         // Optionally reset form fields or redirect
-        router.push(`/blogs/${slug}`); // Redirect to the blog post page
+        router.push(`/blogs`); // Redirect to the blog post page
       } else {
         setErrorMessage('Failed to update the post. Please try again.');
       }
@@ -94,12 +94,10 @@ export default function EditBlogForm() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-            Slug
-          </label>
+        
           <input
             id="slug"
-            type="text"
+            type="hidden"
             value={slug || ''}  // Set default value from the dynamic route parameter
             readOnly
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

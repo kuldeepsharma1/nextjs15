@@ -4,43 +4,68 @@ import Blog from '@/models/Blog';
 import User from '@/models/userModel';
 import { NextRequest, NextResponse } from 'next/server';
 
+function generateSlug(title: string, uniquePart: string | number = ''): string {
+    let baseSlug = title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with hyphens
+        .replace(/^-+|-+$/g, '');    // Remove leading or trailing hyphens
+
+    if (uniquePart) {
+        baseSlug = `${baseSlug}-${uniquePart}`;
+    }
+
+    return baseSlug;
+}
 
 
 export async function POST(request: NextRequest) {
-    await connect()
+    await connect();
     try {
+        const reqBody = await request.json();
+        const { title, image, content, category } = reqBody;
 
-        const reqBody = await request.json()
-        const { title, image, content, slug, category } = reqBody;
-        console.log(reqBody);
-        // Todo for you do for username
-        const blog = await Blog.findOne({ slug })
-        if (blog) {
-            return NextResponse.json({ error: 'Blog  already exist' }, { status: 400 })
+        // Initial slug generation
+        let slug = generateSlug(title);
+
+        // Ensure slug is unique
+        let existingBlog = await Blog.findOne({ slug });
+        let count = 1;
+        while (existingBlog) {
+            slug = generateSlug(title, `${Date.now()}-${count}`); // Unique timestamp and count
+            existingBlog = await Blog.findOne({ slug });
+            count++;
         }
 
         const username = await getDataFromToken(request);
 
-        const uname = await User.findOne({ username })
+        const uname = await User.findOne({ username });
+        if (!uname) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
         const author = uname.username;
+
         const newBlog = new Blog({
-            title, image, content, author, slug, category
-        })
+            title,
+            image,
+            content,
+            author,
+            slug,
+            category,
+        });
 
-        const savedBlog = await newBlog.save()
+        const savedBlog = await newBlog.save();
         console.log(savedBlog);
-
 
         return NextResponse.json({
             message: "Blog created",
             success: true,
-            savedBlog
-        })
+            savedBlog,
+        });
 
     } catch (err: unknown) {
         // Handle any unexpected errors
         if (err instanceof Error) {
-
             return NextResponse.json(
                 { message: `Server error: ${err.message}`, success: false },
                 { status: 500 }

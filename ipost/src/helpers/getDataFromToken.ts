@@ -16,7 +16,9 @@ export const getDataFromToken = (request: NextRequest): string | null => {
     if (!token) {
       throw new Error('Token is missing');
     }
-
+    if (!token) {
+      return 'please login'
+    }
     // Decode the token and cast to the specific type
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!) as DecodedToken;  // Cast to the DecodedToken type
 

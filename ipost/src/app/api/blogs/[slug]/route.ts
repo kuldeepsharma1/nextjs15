@@ -4,6 +4,20 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // GET Request - Fetch a blog post by slug
 
+function generateSlug(title: string, uniquePart: string | number = ''): string {
+  let baseSlug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with hyphens
+      .replace(/^-+|-+$/g, '');    // Remove leading or trailing hyphens
+
+  if (uniquePart) {
+      baseSlug = `${baseSlug}-${uniquePart}`;
+  }
+
+  return baseSlug;
+}
+
 
 export async function GET(
   request: Request,
@@ -12,7 +26,7 @@ export async function GET(
   await connect(); // Ensure database connection
 
   try {
-    const slug = (await params).slug 
+    const slug = (await params).slug
 
     console.log('Received slug for GET request:', slug);
 
@@ -52,56 +66,64 @@ export async function GET(
 
 // PUT Request - Update a blog post by slug
 export async function PATCH(request: NextRequest) {
-    await connect();
+  await connect();
 
-    try {
-        const { title, content, image, category, slug } = await request.json();
-        console.log('Received slug for PUT request:', slug);
+  try {
+    const { title, content, image, category, slug } = await request.json();
+    // console.log('Received slug for  request:', slug);
 
-        if (!slug || typeof slug !== 'string' || slug.trim() === '') {
-            return NextResponse.json(
-                { message: 'Valid slug is required', success: false },
-                { status: 400 }
-            );
-        }
-
-
-        console.log('Received request body for PUT:', { title, content, image, category });
-
-        if (!title || typeof title !== 'string' || !content || typeof content !== 'string') {
-            return NextResponse.json(
-                { message: 'Title and content are required', success: false },
-                { status: 400 }
-            );
-        }
-
-        const post = await Blog.findOne({ slug });
-
-        if (!post) {
-            return NextResponse.json(
-                { message: 'Blog not found', success: false },
-                { status: 404 }
-            );
-        }
-
-        post.title = title;
-        post.content = content;
-        if (image && typeof image === 'string') post.image = image;
-        if (category && typeof category === 'string') post.category = category;
-
-        await post.save();
-
-        return NextResponse.json({
-            message: 'Blog updated successfully',
-            post,
-            success: true,
-        });
-
-    } catch (err: unknown) {
-        console.error('Error updating blog:', err);
-        return NextResponse.json(
-            { message: 'Unexpected error occurred', success: false },
-            { status: 500 }
-        );
+    if (!slug || typeof slug !== 'string' || slug.trim() === '') {
+      return NextResponse.json(
+        { message: 'Valid slug is required', success: false },
+        { status: 400 }
+      );
     }
+
+
+    // console.log('Received request body for PUT:', { title, content, image, category,slug });
+
+    if (!title || typeof title !== 'string' || !content || typeof content !== 'string') {
+      return NextResponse.json(
+        { message: 'Title and content are required', success: false },
+        { status: 400 }
+      );
+    }
+
+    const post = await Blog.findOne({ slug });
+    if (!post) {
+      return NextResponse.json(
+        { message: 'Blog not found', success: false },
+        { status: 404 }
+      );
+    }
+    let newslug = generateSlug(title);
+     // Ensure slug is unique
+     let existingBlog = await Blog.findOne({ newslug });
+     let count = 1;
+     while (existingBlog) {
+         newslug = generateSlug(title, `${Date.now()}-${count}`); // Unique timestamp and count
+         existingBlog = await Blog.findOne({ newslug });
+         count++;
+     }
+    post.title = title;
+    post.slug = newslug;
+    post.content = content;
+    if (image && typeof image === 'string') post.image = image;
+    if (category && typeof category === 'string') post.category = category;
+
+    await post.save();
+
+    return NextResponse.json({
+      message: 'Blog updated successfully',
+      post,
+      success: true,
+    });
+
+  } catch (err: unknown) {
+    console.error('Error updating blog:', err);
+    return NextResponse.json(
+      { message: 'Unexpected error occurred', success: false },
+      { status: 500 }
+    );
+  }
 }
