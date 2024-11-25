@@ -18,6 +18,7 @@ export const config = { matcher:[
     '/',
     '/auth/profile',
     '/auth/login',
-    '/auth/register'
+    '/auth/register',
+    '/blogs/create',
 ]
 }
