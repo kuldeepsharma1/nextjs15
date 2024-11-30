@@ -5,6 +5,9 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from 'next/link'
 import ThemeSwitch from '../ThemeSwitch'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NavigationItem {
   name: string
@@ -45,6 +48,26 @@ function classNames(...classes: string[]) {
 
 export default function Header() {
 
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Check if the user is authenticated
+  // Handle Logout
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get('/api/users/logout')
+      if (response.status === 200) {
+        setIsAuthenticated(false);
+        router.push('/auth/login');
+      }
+    } catch (error:unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error:', error.response?.data || error.message);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
+  }
 
   return (
     <>
@@ -121,11 +144,25 @@ export default function Header() {
                       </MenuItem>
 
                     ))}
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-                      Sign Out
-
-                    </button>
+                    <div className="flex items-center space-x-4">
+                      {isAuthenticated ? (
+                        <button
+                          onClick={handleLogout}
+                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+                        >
+                          Logout
+                        </button>
+                      ) : (
+                        <>
+                          <Link href="/auth/login">
+                            <span className="hover:text-blue-400 transition">Login</span>
+                          </Link>
+                          <Link href="/auth/register">
+                            <span className="hover:text-blue-400 transition">Register</span>
+                          </Link>
+                        </>
+                      )}
+                    </div>
                   </MenuItems>
 
                 </Menu>

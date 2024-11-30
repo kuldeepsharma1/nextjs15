@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import React, { useEffect } from "react";
 import Spinner from "@/components/Spinner";
+import { useAuth } from '@/contexts/AuthContext';
 
 // Type definitions for the user object
 interface User {
@@ -23,7 +24,7 @@ export default function Login() {
     email: "",
     password: "",
   });
-
+  const { setIsAuthenticated } = useAuth();
   const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -37,7 +38,7 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' }
       });
       console.log("Login successful:", response.data);
-
+      setIsAuthenticated(true);
       // Redirect after successful login
       router.push('/');
 
