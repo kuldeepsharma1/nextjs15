@@ -1,253 +1,172 @@
-'use client'
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-
-import Link from 'next/link'
-import ThemeSwitch from '../ThemeSwitch'
-import Image from 'next/image'
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import ThemeSwitch from "../ThemeSwitch";
+import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { useAuth } from '@/contexts/AuthContext';
-
-interface NavigationItem {
-  name: string
-  href: string
-  current: boolean
-}
-
-interface UserNavigationItem {
-  name: string
-  href: string
-}
-
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-
-const navigation: NavigationItem[] = [
-  { name: 'Dashboard', href: '/blogs', current: true },
-  { name: 'Profile', href: '/auth/profile', current: false },
-  { name: 'Blogs', href: '/blogs', current: false },
-  { name: 'Calendar', href: '#', current: false },
-  { name: 'Reports', href: '#', current: false },
-]
-
-const userNavigation: UserNavigationItem[] = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
-
 
 export default function Header() {
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const router = useRouter();
 
-  // Check if the user is authenticated
-  // Handle Logout
   const handleLogout = async () => {
+
     try {
-      const response = await axios.get('/api/users/logout')
+      const response = await axios.get('/api/users/logout');
       if (response.status === 200) {
         setIsAuthenticated(false);
         router.push('/auth/login');
       }
-    } catch (error:unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error('Axios error:', error.response?.data || error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message); // Safely access error.message
       } else {
-        console.error('Unexpected error:', error);
+        console.log('An unexpected error occurred:', error);
       }
     }
   }
-
   return (
-    <>
+    <header className="w-full py-5 bg-gray-900  shadow-md">
+      <nav className="max-w-7xl mx-auto flex items-center justify-between  px-4 md:px-6">
 
-      <Disclosure as="nav" className="bg-gray-500 dark:bg-gray-800">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Image
-                  alt="Your Company" width={20} height={20}
-                  src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
-                  className="h-8 w-8"
-                />
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
-                  {navigation.map((item) => (
-                    <Link key={item.name} href={item.href}
-
-                      aria-current={item.current ? 'page' : undefined}
-                      className={classNames(
-                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'rounded-md px-3 py-2 text-sm font-medium',
-                      )}
-                    >
-                      {item.name}
-
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="hidden md:block">
-              <div className="ml-4 flex items-center md:ml-6">
-                <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                  </svg>
-
-                </button>
-
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Open user menu</span>
-
-                      <Image
-                        alt="Your Company" width={20} height={20}
-                        src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
-                        className="h-8 w-8 rounded-full"
-                      />
-                    </MenuButton>
-                  </div>
-                  <MenuItems
-                    transition
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                  >
-                    {userNavigation.map((item) => (
-                      <MenuItem key={item.name}>
-                        <Link href={item.href}
-                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-                          {item.name}
-
-                        </Link>
-
-                      </MenuItem>
-
-                    ))}
-                    <div className="flex items-center space-x-4">
-                      {isAuthenticated ? (
-                        <button
-                          onClick={handleLogout}
-                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
-                        >
-                          Logout
-                        </button>
-                      ) : (
-                        <>
-                          <Link href="/auth/login">
-                            <span className="hover:text-blue-400 transition">Login</span>
-                          </Link>
-                          <Link href="/auth/register">
-                            <span className="hover:text-blue-400 transition">Register</span>
-                          </Link>
-                        </>
-                      )}
-                    </div>
-                  </MenuItems>
-
-                </Menu>
-                {user ? '' : <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
-                <ThemeSwitch />
-
-              </div>
-            </div>
-            <div className="-mr-2 flex md:hidden">
-              {/* Mobile menu button */}
-              <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                <span className="absolute -inset-0.5" />
-                <span className="sr-only">Open main menu</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="block h-6 w-6 group-data-[open]:hidden">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-                <svg className="hidden h-6 w-6 group-data-[open]:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-
-
-
-              </DisclosureButton>
-            </div>
-          </div>
+        {/* Brand Name */}
+        <div>
+          <Link href="/" aria-label="NetHunt" className="text-3xl font-semibold text-lime-400 dark:text-lime-400">
+            NetHunt
+          </Link>
         </div>
 
-        <DisclosurePanel className="md:hidden">
-          <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-            {navigation.map((item) => (
-              <DisclosureButton
-                key={item.name}
-                as="a"
-                href={item.href}
-                aria-current={item.current ? 'page' : undefined}
-                className={classNames(
-                  item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'block rounded-md px-3 py-2 text-base font-medium',
-                )}
-              >
-                {item.name}
-              </DisclosureButton>
-            ))}
-          </div>
-          <div className="border-t border-gray-700 pb-3 pt-4">
-            <div className="flex items-center px-5">
-              <div className="flex-shrink-0">
-                <img alt="" src={user.imageUrl} className="h-10 w-10 rounded-full" />
-              </div>
-              <div className="ml-3">
-                <div className="text-base/5 font-medium text-white">{user.name}</div>
-                <div className="text-sm font-medium text-gray-400">{user.email}</div>
-              </div>
-              <button
-                type="button"
-                className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              >
-                <span className="absolute -inset-1.5" />
-                <span className="sr-only">View notifications</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
+        {/* Hamburger Menu Button */}
+        <button
+          className="md:hidden flex items-center focus:outline-none text-white"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            />
+          </svg>
+        </button>
 
-              </button>
-            </div>
-            <div className="mt-3 space-y-1 px-2">
-              {userNavigation.map((item) => (
-                <DisclosureButton
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+        {/* Desktop Navbar */}
+        {!mobileMenuOpen && (
+          <div className="hidden md:flex items-center space-x-6">
+            <Link href="/about" className="text-white  hover:text-gray-300 ">
+              About
+            </Link>
+            <Link href="/community" className="text-white  hover:text-gray-200">
+              Community
+            </Link>
+            <Link href="/challenges" className="text-white  hover:text-gray-200">
+              Challenges
+            </Link>
+            <Link href="/blogs" className="block py-2 text-white  hover:text-gray-200">
+              Blogs
+            </Link>
+            <Link href="/contact" className="text-white  hover:text-gray-2000">
+              Contact
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/auth/profile" className="flex items-center bg-w text-white  hover:text-gray-200 dark:hover:text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {item.name}
-                </DisclosureButton>
-              ))}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5.121 18.121A4 4 0 015 17V7a4 4 0 014-4h6a4 4 0 014 4v10a4 4 0 01-.121 1.121M12 7h.01M16 20H8a2 2 0 110-4h8a2 2 0 110 4z"
+                  />
+                </svg>
+                <span className="ml-2">Profile</span>
+              </Link>
+              <Link href="/reward" className="text-white  hover:text-gray-2000">
+                Reward
+              </Link>
+
+              <div className="flex items-center space-x-4">
+                {isAuthenticated ? (
+                  <button
+                    onClick={handleLogout}
+                    className="text-white bg-orange-400 px-4 py-2 rounded-xl hover:bg-orange-500 transition"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link href="/auth/register" className='py-2 px-3 text-sm font-medium rounded-xl bg-white border border-gray-200 text-black hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700'>
+                      Register
+                    </Link>
+                    <Link href="/auth/login" className="py-2 px-3 text-sm font-medium rounded-xl bg-lime-400 text-black hover:bg-lime-500 transition">
+                      Log in
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              <ThemeSwitch />
             </div>
           </div>
-        </DisclosurePanel>
-      </Disclosure>
+        )}
+      </nav>
 
+      {/* Mobile Navbar */}
+      {mobileMenuOpen && (
+        <div className="md:hidden px-4 py-5 text-white  hover:text-gray-200 shadow-lg space-y-4">
+          <Link href="/about" className="block py-2 text-white  hover:text-gray-200">
+            About
+          </Link>
+          <Link href="/community" className="block py-2text-white  hover:text-gray-200">
+            Community
+          </Link>
+          <Link href="/challenges" className="block py-2 text-white  hover:text-gray-200">
+            Challenges
+          </Link>
+          <Link href="/blogs" className="block py-2 text-white  hover:text-gray-200">
+            Blogs
+          </Link>
+          <Link href="/contact" className="block py-2 text-white  hover:text-gray-200">
+            Contact
+          </Link>
+          <div className="flex flex-col space-y-4">
 
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="text-white bg-orange-400 px-4 py-2 rounded-xl hover:bg-orange-500 transition"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link href="/auth/register" className='py-2 px-3 text-sm font-medium rounded-xl bg-white border border-gray-200 text-black hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700'>
+                  Register
+                </Link>
+                <Link href="/auth/login" className="py-2 px-3 text-sm font-medium rounded-xl bg-lime-400 text-black hover:bg-lime-500 transition">
+                  Log in
+                </Link>
+              </>
+            )}
 
+          </div>
 
-    </>
-  )
+        </div>
+      )}
+    </header>
+  );
 }
-
