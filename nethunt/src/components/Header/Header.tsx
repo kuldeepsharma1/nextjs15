@@ -78,7 +78,7 @@ export default function Header() {
               <Link href="/reward" className="text-white  hover:text-gray-2000">
              Reward
             </Link>
-              {/* <AuthButton/> */}
+           
               <AuthButton/>
               
               <ThemeSwitch/>

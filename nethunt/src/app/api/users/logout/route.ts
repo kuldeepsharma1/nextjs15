@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server"
 
 
@@ -16,16 +17,19 @@ export async function GET() {
         
         
         return response;
-    } catch (error: unknown) {
-        console.error('An error occurred:', error); // Log the error for debugging
-    
-        let errorMessage = 'An unexpected error occurred';
-        if (error instanceof Error) {
-            errorMessage = error.message; // Access the message property safely
+    }catch (err: unknown) {
+        // Handle any unexpected errors
+        if (err instanceof Error) {
+
+            return NextResponse.json(
+                { message: `Server error: ${err.message}`, success: false },
+                { status: 500 }
+            );
         }
-    
+
+        console.error('Unexpected error occurred:', err);
         return NextResponse.json(
-            { error: `Internal Server Error: ${errorMessage}` },
+            { message: 'Unexpected error occurred while updating the blog.', success: false },
             { status: 500 }
         );
     }
