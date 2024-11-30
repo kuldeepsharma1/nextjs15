@@ -1,0 +1,28 @@
+/* Button.module.css */
+.button {
+    padding: 0.5em 1em;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .primary {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+  }
+  
+  .secondary {
+    color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+  }
+  
+  .primary:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  
+  .secondary:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
+  }
+  
