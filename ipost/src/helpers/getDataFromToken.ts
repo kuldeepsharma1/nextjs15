@@ -1,30 +1,30 @@
-import { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
 // Define a TypeScript interface for the decoded token
 interface DecodedToken {
-  id: string;  // User ID
+  id: string; // User ID
   username: string;
   email: string;
 }
 
 export const getDataFromToken = (request: NextRequest): string | null => {
   try {
-    // Extract token from the cookie
-    const token = request.cookies.get('token')?.value || '';
+    // Extract token from the cookies
+    const token = request.cookies.get("token")?.value;
 
     if (!token) {
-      throw new Error('Token is missing');
+      console.warn("Token is missing in the request");
+      return null; // Return null if no token is present
     }
-    if (!token) {
-      return 'please login'
-    }
-    // Decode the token and cast to the specific type
-    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!) as DecodedToken;  // Cast to the DecodedToken type
 
-    return decodedToken.username; // Return the user ID
-  } catch (error: unknown) {
-    console.error('Error extracting data from token:', error); // Log the error
-    throw new Error('Unauthorized: Token is invalid or expired'); // Handle invalid/expired token
+    // Verify and decode the token
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!) as DecodedToken;
+
+    // Return the username from the decoded token
+    return decodedToken.username;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null; // Return null if token is invalid or expired
   }
 };

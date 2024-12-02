@@ -1,4 +1,5 @@
-'use client'
+'use client'; // Ensures the entire file runs in the client context
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
@@ -8,20 +9,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const res = await fetch('/api/users/status', { method: 'GET' });
-      if (res.ok) {
-        setIsAuthenticated(true);
-      } else {
+      try {
+        const res = await fetch('/api/users/status', {
+          method: 'GET',
+          credentials: 'include', // Ensures cookies are sent with the request
+        });
+        if (res.ok) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
         setIsAuthenticated(false);
       }
     };
+
     checkAuth();
   }, []);
 
@@ -32,7 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

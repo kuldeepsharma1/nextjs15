@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation"; // Correct for latest Next.js versions
-import React, { useEffect } from "react";
-import axios from "axios";
-import Spinner from "@/components/Spinner";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Spinner from '@/components/Spinner';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 
 // Define the User type
 interface User {
@@ -14,47 +14,51 @@ interface User {
 }
 
 export default function Login() {
-  const [user, setUser] = React.useState<User>({
-    email: "",
-    password: "",
+  const [user, setUser] = useState<User>({
+    email: '',
+    password: '',
   });
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
-  const [buttonDisabled, setButtonDisabled] = React.useState<boolean>(true);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const router = useRouter(); // Initialize router for navigation
+  const {  setIsAuthenticated } = useAuth();
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isAuthenticated) {
-      router.replace('/');
-    }
+
+
     try {
       setLoading(true);
-      console.log("Attempting login...");
+      console.log('Attempting login...');
 
-      const response = await axios.post("/api/users/login", user, {
-        headers: { "Content-Type": "application/json" },
-      });
+      // Post login credentials to your API
+      const response = await axios.post(
+        '/api/users/login',
+        user,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
-      console.log("Login successful:", response.data);
+      console.log('Login successful:', response.data);
+
+      // Update the global authentication state
       setIsAuthenticated(true);
 
       // Navigate to the home page
-      router.refresh()
-      router.replace('/');
+      router.replace('/?logged_in=true');
 
     } catch (error) {
+      // Handle errors (e.g., invalid credentials)
       if (axios.isAxiosError(error)) {
-        console.error("Login failed:", error.response?.data || error.message);
+        console.error('Login failed:', error.response?.data || error.message);
       } else {
-        console.error("Unexpected error:", error);
+        console.error('Unexpected error:', error);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // Update button state based on input validity
+  // Enable the login button only if email and password are filled
   useEffect(() => {
     setButtonDisabled(!(user.email && user.password));
   }, [user]);
@@ -115,13 +119,13 @@ export default function Login() {
 
           <div>
             <Button className="w-full rounded-full" disabled={buttonDisabled} type="submit">
-              {loading ? "Logging in..." : "Login"}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </div>
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <a href="/auth/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
             Register
           </a>
