@@ -69,7 +69,7 @@ export default function Header() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <p className='text-zinc-50 font-semibold text-2xl'>IPOST</p>
+                <Link href={'/'} className='text-zinc-50 font-semibold text-2xl'>IPOST</Link>
               </div>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
