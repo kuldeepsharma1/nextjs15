@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import React, { useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import { useAuth } from '@/contexts/AuthContext';
+import { Button } from "@/components/ui/button";
 
 // Type definitions for the user object
 interface User {
@@ -14,9 +14,6 @@ interface User {
 }
 
 export default function Login() {
-
-
-
   const router = useRouter();
 
   // State types
@@ -70,31 +67,6 @@ export default function Login() {
           Login to your account
         </h2>
       </div>
-      {/* <Image
-        src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa"
-        alt="A beautiful view"
-        width={800}
-        height={600}
-      /> */}
-    <div>
-    {/* Unsplash Example */}
-    <Image 
-      src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa" 
-      alt="Unsplash Example"
-      width={800} 
-      height={600} 
-      priority 
-    />
-
-    {/* Pixabay Example */}
-    <Image 
-      src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg" 
-      alt="Pixabay Example"
-      width={800} 
-      height={600} 
-      priority 
-    />
-  </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={onLogin} className="space-y-6">
           {loading ? <Spinner /> : ''}
@@ -143,17 +115,11 @@ export default function Login() {
           </div>
 
           <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              disabled={buttonDisable}
-            >
+            <Button className="w-full rounded-full" disabled={buttonDisable} type="submit"  >
               {buttonDisable ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 stroke-red-500">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
-                </svg>
+                "Login"
               ) : "Login"}
-            </button>
+            </Button>
           </div>
         </form>
 

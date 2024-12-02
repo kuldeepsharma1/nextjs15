@@ -5,14 +5,13 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from 'next/link'
 import ThemeSwitch from '../ThemeSwitch'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface NavigationItem {
   name: string
   href: string
-  current: boolean
 }
 
 interface UserNavigationItem {
@@ -28,11 +27,9 @@ const user = {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'Dashboard', href: '/blogs', current: true },
-  { name: 'Profile', href: '/auth/profile', current: false },
-  { name: 'Blogs', href: '/blogs', current: false },
-  { name: 'Calendar', href: '#', current: false },
-  { name: 'Reports', href: '#', current: false },
+  { name: 'Home', href: '/' },
+  { name: 'Profile', href: '/auth/profile' },
+  { name: 'Blogs', href: '/blogs' },
 ]
 
 const userNavigation: UserNavigationItem[] = [
@@ -43,11 +40,8 @@ const userNavigation: UserNavigationItem[] = [
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
-
-
-
 export default function Header() {
-
+  const pathname = usePathname();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const router = useRouter();
 
@@ -60,7 +54,7 @@ export default function Header() {
         setIsAuthenticated(false);
         router.push('/auth/login');
       }
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error('Axios error:', error.response?.data || error.message);
       } else {
@@ -68,34 +62,30 @@ export default function Header() {
       }
     }
   }
-
   return (
     <>
-
-      <Disclosure as="nav" className="bg-gray-500 dark:bg-gray-800">
+      <Disclosure as="nav" className="bg-zinc-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Image
-                  alt="Your Company" width={20} height={20}
-                  src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
-                  className="h-8 w-8"
-                />
+                <p className='text-zinc-50 font-semibold text-2xl'>IPOST</p>
               </div>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
+
                   {navigation.map((item) => (
                     <Link key={item.name} href={item.href}
 
-                      aria-current={item.current ? 'page' : undefined}
                       className={classNames(
-                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'rounded-md px-3 py-2 text-sm font-medium',
+                        pathname === item.href
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        'px-3 py-2 rounded-md text-sm font-medium'
                       )}
+                      aria-current={pathname === item.href ? 'page' : undefined}
                     >
                       {item.name}
-
                     </Link>
                   ))}
                 </div>
@@ -144,29 +134,32 @@ export default function Header() {
                       </MenuItem>
 
                     ))}
-                    <div className="flex items-center space-x-4">
-                      {isAuthenticated ? (
-                        <button
-                          onClick={handleLogout}
-                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
-                        >
-                          Logout
-                        </button>
-                      ) : (
-                        <>
-                          <Link href="/auth/login">
-                            <span className="hover:text-blue-400 transition">Login</span>
+
+                    {isAuthenticated ? (
+                      <button
+                        onClick={handleLogout}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+                      >
+                        Logout
+                      </button>
+                    ) : (
+                      <>
+                        <MenuItem>
+                          <Link href="/auth/login" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
+                            Login
                           </Link>
-                          <Link href="/auth/register">
-                            <span className="hover:text-blue-400 transition">Register</span>
+                        </MenuItem>
+                        <MenuItem>
+                          <Link href="/auth/register" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
+                            Register
                           </Link>
-                        </>
-                      )}
-                    </div>
+                        </MenuItem>
+                      </>
+                    )}
                   </MenuItems>
 
                 </Menu>
-                {user ? '' : <Link className='pl-5 text-blue-600 text-lg' href="/auth/register">Register</Link>}
+
                 <ThemeSwitch />
 
               </div>
@@ -189,7 +182,6 @@ export default function Header() {
             </div>
           </div>
         </div>
-
         <DisclosurePanel className="md:hidden">
           <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
             {navigation.map((item) => (
@@ -197,15 +189,16 @@ export default function Header() {
                 key={item.name}
                 as="a"
                 href={item.href}
-                aria-current={item.current ? 'page' : undefined}
+                aria-current={ pathname === item.href ? 'page' : undefined}
                 className={classNames(
-                  item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                  pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                   'block rounded-md px-3 py-2 text-base font-medium',
                 )}
               >
                 {item.name}
               </DisclosureButton>
             ))}
+         
           </div>
           <div className="border-t border-gray-700 pb-3 pt-4">
             <div className="flex items-center px-5">
@@ -243,10 +236,6 @@ export default function Header() {
           </div>
         </DisclosurePanel>
       </Disclosure>
-
-
-
-
     </>
   )
 }
