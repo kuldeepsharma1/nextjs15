@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import axios from "axios";
 import React, { useEffect } from "react";
 import Spinner from "@/components/Spinner";
@@ -14,7 +14,6 @@ interface User {
 }
 
 export default function Login() {
-  const router = useRouter();
 
   // State types
   const [user, setUser] = React.useState<User>({
@@ -37,7 +36,7 @@ export default function Login() {
       console.log("Login successful:", response.data);
       setIsAuthenticated(true);
       // Redirect after successful login
-      router.push('/');
+      redirect('/')
 
     } catch (error: unknown) {
       // Log full error details
