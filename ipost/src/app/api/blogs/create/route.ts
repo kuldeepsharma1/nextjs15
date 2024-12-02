@@ -19,15 +19,28 @@ function generateSlug(title: string, uniquePart: string | number = ''): string {
 }
 
 
+function generatePlaceholderUrl(title: string): string {
+    // Ensure the title is only 6 characters long
+    const truncatedTitle = title.slice(0, 6);
+
+    // Generate a random background color in hex format
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
+    // Construct the new URL
+    const updatedUrl = `https://via.placeholder.com/400x300.png/${randomColor}/FFFFFF?text=${encodeURIComponent(`${truncatedTitle}...`)}`;
+
+    return updatedUrl;
+}
+
 export async function POST(request: NextRequest) {
     await connect();
     try {
         const reqBody = await request.json();
-        const { title, image, content, category } = reqBody;
+        const { title,  content, category } = reqBody;
 
         // Initial slug generation
         let slug = generateSlug(title);
-
+        const image = generatePlaceholderUrl(title);
         // Ensure slug is unique
         let existingBlog = await Blog.findOne({ slug });
         let count = 1;

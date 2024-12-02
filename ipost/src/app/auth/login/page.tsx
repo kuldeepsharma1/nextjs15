@@ -25,8 +25,6 @@ export default function Login() {
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
     try {
       setLoading(true);
       console.log('Attempting login...');

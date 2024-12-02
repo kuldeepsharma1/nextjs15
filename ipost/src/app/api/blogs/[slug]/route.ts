@@ -18,6 +18,18 @@ function generateSlug(title: string, uniquePart: string | number = ''): string {
   return baseSlug;
 }
 
+function generatePlaceholderUrl(title: string): string {
+  // Ensure the title is only 6 characters long
+  const truncatedTitle = title.slice(0, 6);
+
+  // Generate a random background color in hex format
+  const randomColor = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
+  // Construct the new URL
+  const updatedUrl = `https://via.placeholder.com/400x300.png/${randomColor}/FFFFFF?text=${encodeURIComponent(`${truncatedTitle}...`)}`;
+
+  return updatedUrl;
+}
 
 export async function GET(
   request: Request,
@@ -69,8 +81,8 @@ export async function PATCH(request: NextRequest) {
   await connect();
 
   try {
-    const { title, content, image, category, slug } = await request.json();
-    // console.log('Received slug for  request:', slug);
+    const { title, content, category, slug } = await request.json();
+    const image = generatePlaceholderUrl(title);
 
     if (!slug || typeof slug !== 'string' || slug.trim() === '') {
       return NextResponse.json(

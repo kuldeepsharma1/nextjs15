@@ -11,7 +11,6 @@ export default function EditBlogForm() {
   
   const [title, setTitle] = useState<string>('');
   const [category, setCategory] = useState<string>('');
-  const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -25,7 +24,7 @@ export default function EditBlogForm() {
           const post = response.data.post;
           setTitle(post.title);
           setCategory(post.category);
-          setImage(post.image);
+        
           setContent(post.content);
           
         })
@@ -42,7 +41,7 @@ export default function EditBlogForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const postData = { title, content, category, image, slug };
+    const postData = { title, content, category, slug };
 
     try {
       const response = await axios.patch(`/api/blogs/${slug}`, postData, {
@@ -117,19 +116,7 @@ export default function EditBlogForm() {
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Image
-          </label>
-          <input
-            id="image"
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          />
-        </div>
+    
 
         <div className="mb-4">
           <label htmlFor="content" className="block text-sm font-medium text-gray-700">

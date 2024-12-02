@@ -19,7 +19,7 @@ interface Post {
 
 export default function Page() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Page() {
   }, []);
 
   const fetchPosts = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     setErrorMessage(null);
     try {
 
@@ -41,7 +41,7 @@ export default function Page() {
       console.error('Error fetching posts:', error);
       setErrorMessage('Error fetching posts.');
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
@@ -52,8 +52,6 @@ export default function Page() {
         headers: { 'Content-Type': 'application/json' }
       });
 
-
-
       // Remove the deleted post from the UI
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
       console.log('Post deleted successfully');
@@ -63,16 +61,16 @@ export default function Page() {
     }
   };
 
-  if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="text-center py-8 min-h-screen">Loading...</div>;
+  // }
 
   if (errorMessage) {
     return <div className="text-center text-red-500 py-8">{errorMessage}</div>;
   }
 
   return (
-    <div className=" mx-auto px-4 py-8">
+    <div className="min-h-screen mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">All Posts</h1>
 
       {posts.length === 0 ? (

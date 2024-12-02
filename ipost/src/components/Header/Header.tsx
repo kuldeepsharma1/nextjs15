@@ -4,7 +4,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 import Link from 'next/link'
 import ThemeSwitch from '../ThemeSwitch'
-import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
@@ -112,11 +111,10 @@ export default function Header() {
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
 
-                      <Image
-                        alt="Your Company" width={20} height={20}
-                        src="https://cdn.pixabay.com/photo/2022/07/24/11/35/women-7341444_1280.jpg"
-                        className="h-8 w-8 rounded-full"
-                      />
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-white">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+
                     </MenuButton>
                   </div>
                   <MenuItems
@@ -189,7 +187,7 @@ export default function Header() {
                 key={item.name}
                 as="a"
                 href={item.href}
-                aria-current={ pathname === item.href ? 'page' : undefined}
+                aria-current={pathname === item.href ? 'page' : undefined}
                 className={classNames(
                   pathname === item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                   'block rounded-md px-3 py-2 text-base font-medium',
@@ -198,7 +196,7 @@ export default function Header() {
                 {item.name}
               </DisclosureButton>
             ))}
-         
+
           </div>
           <div className="border-t border-gray-700 pb-3 pt-4">
             <div className="flex items-center px-5">

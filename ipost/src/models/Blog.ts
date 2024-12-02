@@ -7,7 +7,7 @@ export interface BlogDocument extends Document {
     slug: string;
     image: string;
     author: string;
-    category: string;
+    category: string|null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,7 +19,7 @@ const blogSchema = new Schema<BlogDocument>(
         slug: { type: String, required: true, unique: true },
         image: { type: String, required: true },
         author: { type: String, required: true },
-        category: { type: String, required: true },
+        category: { type: String, default:null },
     }, {
     timestamps: true
 }

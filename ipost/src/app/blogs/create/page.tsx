@@ -8,7 +8,6 @@ export default function CreateBlogForm() {
   const router = useRouter();
   const [title, setTitle] = useState<string>('');
   const [category, setCategory] = useState<string>('');
-  const [image, setImage] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -20,7 +19,7 @@ export default function CreateBlogForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const postData = { title, content,category ,image};
+    const postData = { title, content,category };
 
     try {
 
@@ -81,7 +80,7 @@ export default function CreateBlogForm() {
    
         <div className="mb-4">
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-            Category
+            Category (optional)
           </label>
           <input
             id="title"
@@ -93,20 +92,7 @@ export default function CreateBlogForm() {
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Image
-          </label>
-          <input
-            id="image"
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Enter the post image address"
-            required
-          />
-        </div>
+      
 
         <div className="mb-4">
           <label htmlFor="content" className="block text-sm font-medium text-gray-700">
