@@ -26,7 +26,7 @@ export default function Login() {
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isAuthenticated) {
-      router.push('/');
+      router.replace('/');
     }
     try {
       setLoading(true);
@@ -40,7 +40,9 @@ export default function Login() {
       setIsAuthenticated(true);
 
       // Navigate to the home page
-      router.push("/");
+      router.refresh()
+      router.replace('/');
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Login failed:", error.response?.data || error.message);
