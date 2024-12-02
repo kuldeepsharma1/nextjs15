@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Spinner from '@/components/Spinner';
@@ -21,7 +21,7 @@ export default function Login() {
   const {  setIsAuthenticated } = useAuth();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
+
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ export default function Login() {
       setIsAuthenticated(true);
 
       // Navigate to the home page
-      router.replace('/?logged_in=true');
+     window.location.href = "/";
 
     } catch (error) {
       // Handle errors (e.g., invalid credentials)
