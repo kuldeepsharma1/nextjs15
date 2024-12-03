@@ -18,7 +18,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         const username = await getDataFromToken(request);
-        
+        console.log(username);
         
         if (!username) {
             return NextResponse.json(

@@ -1,7 +1,6 @@
 "use client";
 
 import axios from 'axios';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -25,11 +24,10 @@ export default function Page() {
     <div className="flex justify-center items-center h-screen">
       <button
         onClick={logout}
-        className="btn flex w-fit"
+        className="bg-red-500 p-4 rounded-full text-white hover:bg-red-600 transition"
       >
         Logout
       </button>
-      <Link className='btn btn-primary ' href="/auth/profile/manage">Manage Your Content</Link>
     </div>
   );
 }

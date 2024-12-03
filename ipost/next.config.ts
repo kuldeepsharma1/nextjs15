@@ -9,12 +9,6 @@ const nextConfig: NextConfig = {
         hostname: 'via.placeholder.com',
         port: '',
         pathname: '/**', // Allows all paths under the images domain
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.pixabay.com',
-        port: '',
-        pathname: '/**', // Allows all paths under the images domain
       }
 
     ],
