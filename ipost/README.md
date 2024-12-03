@@ -1,1 +1,0 @@
-## IPOST  is built with latest next js framework
