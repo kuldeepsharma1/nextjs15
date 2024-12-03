@@ -29,6 +29,7 @@ const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
   { name: 'Profile', href: '/auth/profile' },
   { name: 'Blogs', href: '/blogs' },
+  { name: 'About', href: '/about' },
 ]
 
 const userNavigation: UserNavigationItem[] = [
