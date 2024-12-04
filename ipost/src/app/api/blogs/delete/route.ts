@@ -17,10 +17,10 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const username = await getDataFromToken(request);
-        console.log(username);
+        const user_id = await getDataFromToken(request);
+        console.log(user_id);
         
-        if (!username) {
+        if (!user_id) {
             return NextResponse.json(
                 { message: 'Unauthorized request', success: false },
                 { status: 401 }
@@ -39,7 +39,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Check ownership
-        if (blog.author !== username) { 
+        if (blog.author !== user_id) { 
             return NextResponse.json(
                 { message: 'You do not have permission to delete this blog', success: false },
                 { status: 403 }

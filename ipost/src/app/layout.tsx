@@ -35,9 +35,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <div className="min-h-full">
-             <div className="mb-16">
+            
              <Header />
-             </div>
+           
               <main>
 
                 {children}

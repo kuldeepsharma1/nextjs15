@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.pixabay.com',
         port: '',
         pathname: '/**', // Allows all paths under the images domain
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.codepen.io',
+        port: '',
+        pathname: '/**', // Allows all paths under the images domain
       }
 
     ],

@@ -1,0 +1,38 @@
+/* about.module.css */
+.scrollDist {
+  width: 100%;
+  height: 200%;
+}
+
+.hero {
+  position: fixed;
+  background: #fff;
+  color: #000;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hero svg {
+  display: block;
+  margin: auto;
+}
+
+body {
+  background: #111b29;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #000;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero svg {
+    width: 100%;
+  }
+}
