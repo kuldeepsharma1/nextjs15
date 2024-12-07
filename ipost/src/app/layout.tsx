@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,15 +34,8 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <div className="min-h-full">
-            
-             <Header />
-           
-              <main>
-
-                {children}
-
-              </main>
-              <Footer />
+              <Toaster />
+              {children}
             </div>
           </AuthProvider>
         </ThemeProvider>

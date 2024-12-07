@@ -17,7 +17,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const res = await fetch('/api/users/status', {
           method: 'GET',
-          credentials: 'include', // Ensures cookies are sent with the request
+          credentials: 'include', 
         });
         if (res.ok) {
           setIsAuthenticated(true);

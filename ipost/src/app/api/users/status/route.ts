@@ -4,18 +4,18 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     // Extract user data from the token
-    const username = getDataFromToken(req);
+    const id = getDataFromToken(req);
 
     // If no username is returned, user is not logged in
-    if (!username) {
+    if (!id) {
       return NextResponse.json(
         { success: false, message: "User is not authenticated" },
         { status: 401 } // Unauthorized
       );
     }
 
-    // Return the username if authenticated
-    return NextResponse.json({ success: true, user: username });
+    // Return the user id if authenticated
+    return NextResponse.json({ success: true, user: id });
   } catch (error) {
     console.error("Error in /api/users/status:", error);
     return NextResponse.json(

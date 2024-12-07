@@ -4,11 +4,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs';
 import { sendEmail } from '@/helpers/mailer';
 import jwt from 'jsonwebtoken';
-connect();
+
 
 export async function POST(request: NextRequest) {
+    return NextResponse.json({
+        message: "User created",
+        success: true,
+   
+    })
 
     try {
+        await connect();
         const reqBody = await request.json()
         const { username, email, password } = reqBody;
         console.log(reqBody);
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
             savedUser
         })
 
-    }catch (err: unknown) {
+    } catch (err: unknown) {
         // Handle any unexpected errors
         if (err instanceof Error) {
 

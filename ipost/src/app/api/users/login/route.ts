@@ -4,11 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';  // Importing jwt for token signing
 
-// Connect to the database
-connect();
+
 
 export async function POST(request: NextRequest) {
+
   try {
+    await connect();
     // Parse the incoming JSON request body
     const reqBody = await request.json();
     const { email, password } = reqBody;
@@ -39,10 +40,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Logged in successfully');
-
     // Create token payload
     const tokenData = {
+      id: user._id,
       username: user.username,
       email: user.email
     };

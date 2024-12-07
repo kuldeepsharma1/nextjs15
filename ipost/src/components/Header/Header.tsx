@@ -1,5 +1,4 @@
 'use client'
-
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from 'next/link'
@@ -8,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import axios from 'axios'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEffect, useState } from 'react'
+import Logo from '../Logo'
 
 interface NavigationItem {
   name: string
@@ -22,7 +22,7 @@ interface UserNavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
-  { name: 'Profile', href: '/auth/profile' },
+  { name: 'Profile', href: '/profile' },
   { name: 'Blogs', href: '/blogs' },
   { name: 'About', href: '/about' },
 ]
@@ -72,7 +72,7 @@ export default function Header() {
       const response = await axios.get('/api/users/logout')
       if (response.status === 200) {
         setIsAuthenticated(false)
-        router.push('/auth/login')
+        router.push('/login')
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -85,12 +85,12 @@ export default function Header() {
 
   return (
     <>
-      <Disclosure as="nav" className={`bg-zinc-800 ${isVisible ? 'top-0' : '-top-16'}  transition-all duration-300 fixed w-full z-50`}>
+      <Disclosure id='header-nav' as="nav" className={`bg-zinc-100 dark:bg-zinc-800 ${isVisible ? 'top-0' : '-top-16'}  transition-all duration-300 fixed w-full z-50`}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Link href={'/'} className="text-zinc-50 font-semibold text-2xl">IPOST</Link>
+                <Logo />
               </div>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
@@ -155,12 +155,12 @@ export default function Header() {
                     ) : (
                       <>
                         <MenuItem>
-                          <Link href="/auth/login" className="block px-4 py-2 text-sm text-gray-700">
+                          <Link href="/login" className="block px-4 py-2 text-sm text-gray-700">
                             Login
                           </Link>
                         </MenuItem>
                         <MenuItem>
-                          <Link href="/auth/register" className="block px-4 py-2 text-sm text-gray-700">
+                          <Link href="/register" className="block px-4 py-2 text-sm text-gray-700">
                             Register
                           </Link>
                         </MenuItem>
@@ -211,12 +211,12 @@ export default function Header() {
             ) : (
               <>
                 <DisclosureButton>
-                  <Link href="/auth/login" className="block px-3 py-2 text-left text-gray-700 hover:bg-gray-600 rounded-md">
+                  <Link href="/login" className="block px-3 py-2 text-left text-gray-700 hover:bg-gray-600 rounded-md">
                     Login
                   </Link>
                 </DisclosureButton>
                 <DisclosureButton>
-                  <Link href="/auth/register" className="block px-3 py-2 text-left text-gray-700 hover:bg-gray-600 rounded-md">
+                  <Link href="/register" className="block px-3 py-2 text-left text-gray-700 hover:bg-gray-600 rounded-md">
                     Register
                   </Link>
                 </DisclosureButton>

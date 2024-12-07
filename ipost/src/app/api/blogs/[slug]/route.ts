@@ -30,51 +30,49 @@ function generatePlaceholderUrl(title: string): string {
 
   return updatedUrl;
 }
-
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ) {
-  await connect(); // Ensure database connection
-
   try {
-    const slug = (await params).slug
+    // Connect to the database
+    await connect();
 
-    console.log('Received slug for GET request:', slug);
+    const { slug } = params;
 
-    // Validate `slug`
     if (!slug || typeof slug !== 'string' || slug.trim() === '') {
       return NextResponse.json(
-        { message: 'Valid slug is required', success: false },
+        { message: 'Valid slug is required', success: false, post: null },
         { status: 400 }
       );
     }
 
-    // Query the database
+    // Query the database to find the post by slug
     const post = await Blog.findOne({ slug });
 
-    // Handle missing blog post
     if (!post) {
       return NextResponse.json(
-        { message: 'Blog not found', success: false },
+        { message: 'Blog not found', success: false, post: null },
         { status: 404 }
       );
     }
 
-    // Respond with the blog data
+    // Return the blog post if found
     return NextResponse.json({
       message: 'Blog retrieved successfully',
-      post,
       success: true,
+      post,
     });
-  } catch (err: unknown) {
-    console.error('Error fetching blog:', err);
+  } catch (error) {
+    console.error('Error fetching blog:', error);
     return NextResponse.json(
-      { message: 'Unexpected error occurred', success: false },
+      { message: 'Unexpected error occurred', success: false, post: null },
       { status: 500 }
     );
   }
 }
+
+
 
 // PUT Request - Update a blog post by slug
 export async function PATCH(request: NextRequest) {
