@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 const publicPaths = [
   '/',
   '/about',
@@ -22,10 +23,12 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const token = request.cookies.get('token')?.value || '';
 
+  // If the user is authenticated and tries to access the public path, redirect to /home
   if (publicPaths.includes(path) && token) {
-    return NextResponse.redirect(new URL('/', request.nextUrl));
+    return NextResponse.redirect(new URL('/home', request.nextUrl));
   }
 
+  // If the user is not authenticated and tries to access protected paths, redirect to /login
   if (protectedPaths.some(route => path.startsWith(route)) && !token) {
     return NextResponse.redirect(new URL('/login', request.nextUrl));
   }
@@ -35,8 +38,9 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/', '/about', '/faq', '/contact', '/community', '/profile', 
-    '/login', '/register', '/forgot', '/reset', 
-    '/blogs/write', '/blogs', '/blogs/[slug]', '/blogs/[slug]/edit'
+    '/', '/about', '/faq', '/contact', '/community', '/profile',
+    '/login', '/register', '/forgot', '/reset',
+    '/blogs/write', '/blogs', '/blogs/[slug]', '/blogs/[slug]/edit',
+    '/home'
   ],
 };

@@ -35,7 +35,7 @@ export default function RootLayout({
           <AuthProvider>
             <div className="min-h-full">
               <Toaster />
-              {children}
+              {children} 
             </div>
           </AuthProvider>
         </ThemeProvider>

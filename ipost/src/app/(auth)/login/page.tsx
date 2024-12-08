@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 // Define schema using Zod
@@ -90,29 +91,30 @@ export default function Login() {
           />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
             <Logo className="lg:text-7xl" icon="size-16" />
+           
           </div>
         </div>
 
       </div>
 
       {/* Right Section with Registration Form */}
-      <div className="w-full lg:w-[75%] flex items-center justify-start bg-gradient-to-b from-zinc-100 to-zinc-200 dark:bg-gradient-to-tr dark:from-zinc-900 dark:to-zinc-700">
+      <div className="w-full h-screen px-5 md:px-0 lg:w-[75%] flex items-center justify-start bg-gradient-to-b from-zinc-100 to-zinc-200 dark:bg-gradient-to-tr dark:from-zinc-900 dark:to-zinc-700">
         <div className=" sm:pl-10  ">
           <h2 className="text-4xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
             Welcome Back!
           </h2>
-          <p className=" text-sm text-gray-200 mb-8">
+          <p className=" text-sm dark:text-gray-200 mb-8">
             Login to continue to IPOSt platform
           </p>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 dark:text-white">
               {/* Email Field */}
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel >Email Address</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter your email"
@@ -130,7 +132,7 @@ export default function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel >Password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -142,11 +144,18 @@ export default function Login() {
                   </FormItem>
                 )}
               />
-
+              <div className="flex flex-row justify-between items-center">
+                <div >
+                  <Checkbox /> Remember me
+                </div>
+                <div>
+                  <Link className="text-indigo-500" href={'/forgot'}>Forgot</Link>
+                </div>
+              </div>
               <div className="mt-4">
                 <Button
                   type="submit"
-                  className="w-full"
+              className="w-full p-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-indigo-700 dark:hover:bg-indigo-800"
                   disabled={loading || form.formState.isSubmitting}
                 >
                   {loading ? "Logging in..." : "Login"}

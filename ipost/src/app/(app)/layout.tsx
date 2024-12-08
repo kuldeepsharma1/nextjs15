@@ -1,5 +1,5 @@
-import Footer from "@/components/Footer/Footer";
-import Header from "@/components/Header/Header";
+import AppFooter from "@/components/Footer/AppFooter";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default function AppLayout({
   children,
@@ -8,9 +8,9 @@ export default function AppLayout({
 }) {
   return (
     <div>
-      <Header />
+      <AppHeader />
       <main className="min-h-screen pt-5 sm:pt-10 dark:bg-zinc-950">{children}</main>
-      <Footer/>
+      <AppFooter/>
     </div>
   );
 }

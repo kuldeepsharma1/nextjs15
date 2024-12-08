@@ -20,14 +20,22 @@ import Logo from "@/components/Logo"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 
+const passwordSchema = z.string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter." })
+  .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
+  .regex(/[0-9]/, { message: "Password must contain at least one number." })
+  .regex(/[\W_]/, { message: "Password must contain at least one special character." });
+
 // Define schema using Zod
 const FormSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  cpassword: z.string().min(6, { message: "Confirm Password must be at least 6 characters." }),
-}).refine(data => data.password === data.cpassword, {
-  message: "Passwords don't match",
+  password: passwordSchema,
+  cpassword: z.string()
+    .min(8, { message: "Confirm Password must be at least 8 characters long." }),
+}).refine((data) => data.password === data.cpassword, {
+  message: "Passwords do not match.",
   path: ["cpassword"],
 })
 

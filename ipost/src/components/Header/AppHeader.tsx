@@ -22,20 +22,21 @@ interface UserNavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
+  { name: 'Profile', href: '/profile' },
   { name: 'Blogs', href: '/blogs' },
   { name: 'About', href: '/about' },
 ]
 
 const userNavigation: UserNavigationItem[] = [
-  { name: 'Login', href: '/login' },
-  { name: 'Register', href: '/register' },
+  { name: 'Your Profile', href: '/profile' },
+  { name: 'Settings', href: '/profile/settings' },
 ]
 
 //  function classNames(...classes: string[]) {
 //    return classes.filter(Boolean).join(' ')
 //  }
 
-export default function Header() {
+export default function AppHeader() {
   const pathname = usePathname()
   const { isAuthenticated, setIsAuthenticated } = useAuth()
   const router = useRouter()
@@ -161,6 +162,14 @@ export default function Header() {
                       </MenuButton>
                     </div>
                     <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none">
+                      {userNavigation.map((item) => (
+                        <MenuItem key={item.name}>
+                          <Link href={item.href} className="block px-4 py-2 text-sm text-zinc-700">
+                            {item.name}
+                          </Link>
+                        </MenuItem>
+                      ))}
+
                       {isAuthenticated ? (
                         <button
                           onClick={handleLogout}
@@ -169,16 +178,20 @@ export default function Header() {
                           Logout
                         </button>
                       ) : (
-                        userNavigation.map((item) => (
-                          <MenuItem key={item.name}>
-                            <Link href={item.href} className="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-100 rounded">
-                              {item.name}
+                        <>
+                          <MenuItem>
+                            <Link href="/login" className="block px-4 py-2 text-sm text-zinc-700">
+                              Login
                             </Link>
                           </MenuItem>
-                        ))
+                          <MenuItem>
+                            <Link href="/register" className="block px-4 py-2 text-sm text-zinc-700">
+                              Register
+                            </Link>
+                          </MenuItem>
+                        </>
                       )}
                     </MenuItems>
-
                   </Menu>
 
                   {/* Theme Switch */}

@@ -1,94 +1,138 @@
 'use client'
+import Logo from "@/components/Logo";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+
+// Define schema using Zod
+const FormSchema = z.object({
+    email: z
+        .string()
+        .email({ message: "Invalid email address." }),
+});
 
 
 export default function Forgot() {
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setMessage('')
-        setError('')
-
+    const [loading, setLoading] = useState(false);
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            email: ""
+        },
+    });
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        setLoading(true);
         try {
-            const res = await fetch('/api/users/forgot',{
-                method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:JSON.stringify({email})
+            const response = await axios.post("/api/users/forgot", data, {
+                headers: { "Content-Type": "application/json" },
             });
 
-            if(res.ok){
-                const data = await res.json()
-                setMessage(data.message || 'Something is went wrong You loose sucker')
-            } else{
-                const errorText =  await res.text(); 
-                try{
-                    const errorData = JSON.parse(errorText)
-                    setError(errorData.message || 'Something wrong bitch.');
-                } catch{
-                    setError('Unknown error you chilgoje');
-                }
+            if (response.data?.success) {
+                toast({
+                    title: "Password Reset Email Sent",
+                    description: "If an account with that email exists, you will receive a password reset email shortly.",
+                });
+                // Optionally, redirect after successful submission, if desired
+                // window.location.href = "/";
             }
-
-        } catch (err) {
-            console.error('error in forgot password submission', err);
-            setError("Error in forgot password submission,Please try again.");
-
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast({
+                    title: "Password Reset Failed",
+                    description:
+                        error.response?.data?.message ||
+                        "An error occurred while sending the reset email. Please try again.",
+                    variant: "destructive",
+                });
+            } else {
+                toast({
+                    title: "Password Reset Failed",
+                    description: "An unexpected error occurred. Please try again later.",
+                    variant: "destructive",
+                });
+            }
+        } finally {
+            setLoading(false);
         }
-    }
-
-
+    };
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-200 ">
-            <div className="bg-gray-800 shadow-sm  rounded-lg p-6  w-full max-w-md  shadow-gray-300">
-                <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
-                <p className="text-gray-400 text-sm text-center mb-6">
-                    Enter your email address to reset your password.
-                </p>
-                <form onSubmit={handleSubmit} >
-                    <div className="mb-4">
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium mb-2"
-                        >
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            required
-                            value={email}
-                            onChange={(key) => setEmail(key.target.value)}
-                            placeholder="Enter your email"
-                            className="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+        <div className="flex">
+            {/* Left Section with Logo and Image */}
+            <div className="hidden lg:block lg:w-[25%]">
+                <div className="relative">
+                    <img
+                        className="h-screen w-full object-cover bg-opacity-15 opacity-50"
+                        src="https://cdn.pixabay.com/photo/2024/06/10/15/05/flower-8820894_640.png"
+                        alt="Logo Background"
+                    />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                        <Logo className="lg:text-7xl" icon="size-16" />
+
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                        Reset Password
-                    </button>
-                </form>
-                {error && (
-                    <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-                )}
-                {message && (
-                    <p className="text-green-500 text-sm mb-4 text-center">{message}</p>
-                )}
-                <p className="text-center text-sm text-gray-400 mt-4">
-                    Remembered your password?{" "}
-                    <Link
-                        href="/login"
-                        className="text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        Go back to login
-                    </Link>
-                </p>
+                </div>
+
+            </div>
+
+            {/* Right Section with Registration Form */}
+            <div className="w-full h-screen px-5 md:px-0 lg:w-[75%] flex items-center justify-start bg-gradient-to-b from-zinc-100 to-zinc-200 dark:bg-gradient-to-tr dark:from-zinc-900 dark:to-zinc-700">
+                <div className=" sm:pl-10  ">
+                    <h2 className="text-4xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+                        Forgot Password
+                    </h2>
+                    <p className=" text-sm dark:text-gray-200 mb-8">
+                        Enter your email address to reset your password.
+                    </p>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 dark:text-white">
+                            {/* Email Field */}
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel >Email Address</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter your email"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage>{form.formState.errors.email?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="mt-4">
+                                <Button
+                                    type="submit"
+                                  className="w-full p-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-indigo-700 dark:hover:bg-indigo-800"
+                                    disabled={loading || form.formState.isSubmitting}
+                                >
+                                    {loading ? "Reseting..." : "Reset Password"}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+
+                    <p className="text-center text-sm mt-4 text-gray-600 dark:text-zinc-400">
+                        Remembered your password?{" "}
+                        <Link href="/login" className="text-indigo-600 hover:underline dark:text-indigo-400">
+                            Go back to login
+                        </Link>
+                    </p>
+
+
+                </div>
+
             </div>
         </div>
     );
 }
+
+

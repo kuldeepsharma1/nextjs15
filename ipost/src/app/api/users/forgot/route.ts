@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json({ message: 'Tera Account nhi ha chomu' }, { status: 400 })
         }
-        const verificationLink = `${process.env.APP_URL!}/auth/reset?token=${user._id}`;
+        const verificationLink = `${process.env.APP_URL!}/reset?token=${user._id}`;
         await sendEmail({
             email: user.email,
             emailType: 'RESET',
@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
         })
 
         return NextResponse.json({
-            message: "Password reset email sent successfully"  
+            message: "Password reset email sent successfully" ,
+            success: true 
         })
 
 

@@ -6,9 +6,9 @@ export async function POST(req: NextRequest) {
     try {
 
         const reqBody = await req.json();
-        const { token, password } = reqBody;
+        const { token, data } = reqBody;
 
-        if (!token || !password) {
+        if (!token || !data.password) {
             return NextResponse.json({ error: "Token is missing and new password is required" }, { status: 400 });
         }
         await connect()
@@ -25,8 +25,7 @@ export async function POST(req: NextRequest) {
         if (!isMatch) {
             return NextResponse.json({ error: "Token is expired or Invalid" }, { status: 400 });
         }
-
-        const hashedPass = await bcryptjs.hash(password, 10);
+        const hashedPass = await bcryptjs.hash(data.password, 10);
         user.password = hashedPass;
         user.forgotPasswordToken = undefined;
         user.forgotPasswordTokenExpiry = undefined;

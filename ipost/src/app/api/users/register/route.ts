@@ -7,11 +7,6 @@ import jwt from 'jsonwebtoken';
 
 
 export async function POST(request: NextRequest) {
-    return NextResponse.json({
-        message: "User created",
-        success: true,
-   
-    })
 
     try {
         await connect();
@@ -41,7 +36,7 @@ export async function POST(request: NextRequest) {
             { expiresIn: '1d' }
         );
 
-        const verificationLink = `${process.env.APP_URL!}/auth/verifyemail?token=${verificationToken}`;
+        const verificationLink = `${process.env.APP_URL!}/verifyemail?token=${verificationToken}`;
         await sendEmail({
             email: savedUser.email,
             emailType: 'VERIFY',

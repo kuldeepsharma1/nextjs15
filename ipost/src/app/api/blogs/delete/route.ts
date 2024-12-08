@@ -4,9 +4,11 @@ import Blog from '@/models/Blog';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(request: NextRequest) {
-    await connect();
-
     try {
+        // Establish database connection
+        await connect();
+
+        // Extract postId from the request body
         const { postId } = await request.json();
 
         // Validate postId
@@ -17,10 +19,10 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const user_id = await getDataFromToken(request);
-        console.log(user_id);
-        
-        if (!user_id) {
+        // Extract user ID from token
+        const userId = await getDataFromToken(request);
+
+        if (!userId) {
             return NextResponse.json(
                 { message: 'Unauthorized request', success: false },
                 { status: 401 }
@@ -29,8 +31,8 @@ export async function DELETE(request: NextRequest) {
 
         // Find the blog post by ID
         const blog = await Blog.findById(postId);
-      
-        // Handle case if no blog was found
+
+        // Handle case if the blog post is not found
         if (!blog) {
             return NextResponse.json(
                 { message: 'Blog not found', success: false },
@@ -38,14 +40,15 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        // Check ownership
-        if (blog.author !== user_id) { 
+        // Check ownership: Ensure the blog's author matches the user ID
+        if (blog.author.toString() !== userId) {
             return NextResponse.json(
                 { message: 'You do not have permission to delete this blog', success: false },
                 { status: 403 }
             );
         }
 
+        // Delete the blog post
         await Blog.findByIdAndDelete(postId);
 
         return NextResponse.json({
@@ -53,7 +56,7 @@ export async function DELETE(request: NextRequest) {
             success: true,
         });
     } catch (err: unknown) {
-        // Handle any unexpected errors
+        // Handle unexpected errors
         if (err instanceof Error) {
             console.error('Server error:', err.message);
             return NextResponse.json(
