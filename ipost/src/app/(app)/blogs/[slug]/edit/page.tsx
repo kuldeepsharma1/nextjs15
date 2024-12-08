@@ -24,7 +24,7 @@ export default function EditBlogForm() {
           const post = response.data.post;
 
           setTitle(post.title);
-          setCategory(post.category.name || ''); // Access `name` property of category
+          setCategory(post.category.name || ''); 
           setContent(post.content);
         })
         .catch(error => {

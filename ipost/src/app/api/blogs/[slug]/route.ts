@@ -33,7 +33,9 @@ export async function GET(
       }
   
       // Query the database
-      const post = await Blog.findOne({ slug });
+      const post = await Blog.findOne({ slug }) 
+      .populate('category', 'name')  
+      .exec();
   
       // Handle missing blog post
       if (!post) {
